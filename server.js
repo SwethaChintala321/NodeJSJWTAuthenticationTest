@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 const jwt = require('jsonwebtoken');
-const exjwt = require('express-jwt');
+const { expressjwt: exjwt } = require("express-jwt");
 const bodyParser = require('body-parser');
 const path = require('path');
 
@@ -41,8 +41,10 @@ app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     
     for (let user of users) {
+        console.log(user.username);
+        console.log(username);
         if (username == user.username && password == user.password) {
-            let token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: '7d' });
+            let token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: '3m' });
             res.json({
                 success: true,
                 err: null,
@@ -71,6 +73,13 @@ app.get('/api/prices', jwtMW, (req, res) => {
     res.json({
         success: true,
         myContent: 'This is the price $3.99'
+    });
+});
+
+app.get('/api/settings', jwtMW, (req, res) => {
+    res.json({
+        success: true,
+        myContent: 'Settings content can be seen once JWT authentication is done'
     });
 });
 
